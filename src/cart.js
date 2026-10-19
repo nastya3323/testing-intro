@@ -5,8 +5,30 @@ function notImplemented() {
   throw new Error('Корзина ещё не реализована. Сначала прочитайте тесты.');
 }
 
-function addToCart() {
-  return notImplemented();
+function addToCart(cart, product, qty) {
+  if (!Number.isFinite(qty) || qty <= 0) {
+    throw RangeError(QTY_ERROR);
+  }
+
+  const existing = cart.find((p) => p.id === product.id);
+
+  if (existing) {
+    const value = existing.quantity + qty;
+
+    if (value > product.stock) {
+      throw RangeError(STOCK_ERROR);
+    }
+
+    existing.quantity = value;
+  } else {
+    if (qty > product.stock) {
+      throw RangeError(STOCK_ERROR);
+    }
+
+    cart.push({ ...product, quantity: qty });
+  }
+
+  return cart;
 }
 
 function changeQuantity(cart, productId, qty) {
